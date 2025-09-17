@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LostFoundForm.css';
 
 const LostFoundForm = ({ onSubmit }) => {
@@ -22,6 +23,17 @@ const LostFoundForm = ({ onSubmit }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const fileToDataURL = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve(null);
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
   const itemCategories = [
     'Phone',
@@ -113,27 +125,53 @@ const LostFoundForm = ({ onSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Create FormData object for file upload
-      const submitData = new FormData();
-      
-      // Append all form fields
-      Object.keys(formData).forEach(key => {
-        if (formData[key] !== null && formData[key] !== '') {
-          submitData.append(key, formData[key]);
-        }
-      });
+      // Convert image if provided
+      const imageData = await fileToDataURL(formData.photo);
 
-      // Call the onSubmit prop if provided
-      if (onSubmit) {
-        onSubmit(submitData);
-      } else {
-        console.log('Form submitted:', formData);
-        alert('Form submitted successfully! (In a real app, this would be sent to the server)');
+      // Derive a lightweight item object for the dashboards
+      const titleParts = [];
+      if (formData.itemCategory) titleParts.push(formData.itemCategory);
+      if (formData.brand) titleParts.push(formData.brand);
+      if (formData.model) titleParts.push(formData.model);
+
+      const title = (formData.customCategory || titleParts.join(' ').trim() || 'Item').slice(0, 80);
+      const location = (formData.customLocation || formData.location || '').trim();
+      const description = (formData.description || '').trim();
+
+      const item = {
+        id: Date.now(),
+        title,
+        description,
+        location,
+        image: imageData,
+        createdAt: Date.now(),
+      };
+
+      const key = formData.reportType === 'found' ? 'foundItems' : 'lostItems';
+      try {
+        const raw = localStorage.getItem(key);
+        const arr = raw ? JSON.parse(raw) : [];
+        arr.push(item);
+        localStorage.setItem(key, JSON.stringify(arr));
+      } catch (err) {
+        console.error('Failed to save item', err);
       }
+
+      // Also provide original submit payload to any external handler
+      if (onSubmit) {
+        const submitData = new FormData();
+        Object.keys(formData).forEach(k => {
+          if (formData[k] !== null && formData[k] !== '') submitData.append(k, formData[k]);
+        });
+        onSubmit(submitData);
+      }
+
+      // Navigate to dashboard
+      navigate('/items');
     }
   };
 

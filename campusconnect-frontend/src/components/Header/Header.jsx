@@ -16,7 +16,7 @@ const Header = () => {
       <nav className="nav">
         <Link className={pathname === "/" || pathname === "/home" ? "active" : ""} to="/home">Home</Link>
         <Link to="/add-lost-item">Add Item</Link>
-        <Link to="/home#recent">Items</Link>
+  <Link to="/items">Items</Link>
         <Link to="#">Messages</Link>
       </nav>
       <div className="actions">

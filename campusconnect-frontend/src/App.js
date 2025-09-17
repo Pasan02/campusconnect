@@ -4,6 +4,8 @@ import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Home from './components/Home/Home';
+import ItemsDashboard from './components/Items/ItemsDashboard';
+import ItemDetails from './components/Items/ItemDetails';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import LostFoundForm from './components/LostFoundForm';
@@ -43,6 +45,8 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/items" element={<ItemsDashboard />} />
+            <Route path="/items/:id" element={<ItemDetails />} />
             <Route path="/add-lost-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
             <Route path="/add-found-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
             <Route path="/report" element={<Report />} />

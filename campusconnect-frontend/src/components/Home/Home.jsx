@@ -145,7 +145,7 @@ const Home = () => {
       <section className="recent">
         <div className="container recent-head">
           <h2>Recently Reported Items</h2>
-          <Link className="view-all" to="#">
+          <Link className="view-all" to="/items">
             View All
             <span className="arrow">→</span>
           </Link>
