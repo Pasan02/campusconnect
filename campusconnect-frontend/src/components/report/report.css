@@ -1,0 +1,60 @@
+/* ============================
+   Report Page Styles (report.css)
+   For CampusConnect
+   ============================ */
+
+/* Gradient background for headers, buttons, etc. */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* File upload box */
+.file-upload {
+  border: 2px dashed #cbd5e0;
+  transition: all 0.3s ease;
+}
+.file-upload:hover {
+  border-color: #667eea;
+  background-color: #f8fafc; /* subtle hover effect */
+}
+
+/* Button styles */
+button {
+  transition: all 0.3s ease;
+}
+button:focus {
+  outline: none;
+}
+
+/* Lost/Found active states */
+#found-btn.active {
+  background-color: #dcfce7; /* light green */
+  color: #166534;            /* dark green */
+  border-color: #86efac;
+}
+#lost-btn.active {
+  background-color: #fee2e2; /* light red */
+  color: #991b1b;            /* dark red */
+  border-color: #fca5a5;
+}
+
+/* Image preview container */
+#preview-container img {
+  border-radius: 0.5rem; /* rounded corners */
+  object-fit: cover;
+}
+
+/* Remove button on preview images */
+#preview-container button {
+  transition: background-color 0.2s ease;
+}
+#preview-container button:hover {
+  background-color: #dc2626; /* darker red */
+}
+
+/* Footer */
+footer {
+  background-color: #1f2937; /* gray-800 */
+  color: white;
+  text-align: center;
+}

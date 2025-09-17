@@ -1,6 +1,12 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+import Header from './components/Header/Header';
+import Home from './components/Home/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import LostFoundForm from './components/LostFoundForm';
+import Report from './components/report/report';
 
 function App() {
   const handleFormSubmit = (formData) => {
@@ -27,15 +33,21 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Campus Connect - Lost & Found</h1>
-        <p>Report lost or found items on campus</p>
-      </header>
-      <main>
-        <LostFoundForm onSubmit={handleFormSubmit} />
-      </main>
-    </div>
+    <Router>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/add-lost-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+          <Route path="/add-found-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+          <Route path="/report" element={<Report />} />
+          <Route path="/lost-found-form" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
