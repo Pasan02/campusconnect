@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 import Home from './components/Home/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
@@ -36,16 +37,19 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/add-lost-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
-          <Route path="/add-found-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
-          <Route path="/report" element={<Report />} />
-          <Route path="/lost-found-form" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
-        </Routes>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/add-lost-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+            <Route path="/add-found-item" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+            <Route path="/report" element={<Report />} />
+            <Route path="/lost-found-form" element={<LostFoundForm onSubmit={handleFormSubmit} />} />
+          </Routes>
+        </main>
+        <Footer />
       </div>
     </Router>
   );

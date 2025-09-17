@@ -387,6 +387,7 @@ const LostFoundForm = ({ onSubmit }) => {
           </button>
         </div>
       </form>
+      
     </div>
   );
 };

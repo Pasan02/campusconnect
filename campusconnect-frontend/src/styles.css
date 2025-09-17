@@ -19,7 +19,7 @@ a:hover {
 /* Containers */
 .auth-container, .item-form, .home-container {
   max-width: 400px;
-  margin: 60px auto;
+  margin: 70px auto 60px auto; /* Reduced top margin from 80px to 70px */
   padding: 30px;
   background-color: #ffffff;
   border-radius: 12px;
