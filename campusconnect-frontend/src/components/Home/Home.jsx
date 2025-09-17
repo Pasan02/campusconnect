@@ -56,9 +56,7 @@ const Home = () => {
             platform
           </p>
           <div className="hero-ctas">
-            <Link className="cta cta-primary" to="/add-found-item">
-              Report Found Item
-            </Link>
+           
             <Link className="cta cta-outline" to="/add-lost-item">
               Report Lost Item
             </Link>
