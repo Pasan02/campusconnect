@@ -1,70 +1,78 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ItemsDashboard from './ItemsDashboard';
 
-// Helper to render with router
-const renderWithRouter = (ui, { route = '/items' } = {}) => {
-  window.history.pushState({}, 'Test page', route);
-  return render(
-    <MemoryRouter initialEntries={[route]}>
-      <Routes>
-        <Route path="/items" element={<ItemsDashboard />} />
-      </Routes>
-    </MemoryRouter>
-  );
+const seedLocalStorage = ({ lost = [], found = [] } = {}) => {
+  window.localStorage.setItem('lostItems', JSON.stringify(lost));
+  window.localStorage.setItem('foundItems', JSON.stringify(found));
 };
 
-beforeEach(() => {
-  // Reset localStorage between tests
-  localStorage.clear();
-});
-
 describe('ItemsDashboard', () => {
-  test('renders a lost item in Lost Items panel', async () => {
-    const lostItem = {
-      id: 1,
-      title: 'Lost Wallet',
-      description: 'Brown leather wallet',
-      location: 'Library',
-      image: null,
-      createdAt: Date.now(),
-    };
-    localStorage.setItem('lostItems', JSON.stringify([lostItem]));
-
-    renderWithRouter(<ItemsDashboard />);
-
-    // Header/title for Lost panel
-    expect(screen.getByRole('heading', { name: /lost items/i })).toBeInTheDocument();
-
-    // Lost item title appears
-    expect(await screen.findByText(/lost wallet/i)).toBeInTheDocument();
-
-    // Lost items count badge shows 1
-    expect(screen.getAllByText('1')[0]).toBeInTheDocument();
+  beforeEach(() => {
+    window.localStorage.clear();
   });
 
-  test('renders a found item in Found Items panel', async () => {
-    const foundItem = {
-      id: 2,
-      title: 'Found Keys',
-      description: 'Set of keys with a red tag',
-      location: 'Cafeteria/Food Court',
-      image: null,
-      createdAt: Date.now(),
-    };
-    localStorage.setItem('foundItems', JSON.stringify([foundItem]));
+  test('renders lost panel with items and count', async () => {
+    const lostItems = [
+      { id: 1, title: 'Lost Phone', description: 'Black iPhone', location: 'Library', createdAt: Date.now() },
+      { id: 2, title: 'Lost Wallet', description: 'Brown leather', location: 'Cafeteria', createdAt: Date.now() - 1000 },
+    ];
+    seedLocalStorage({ lost: lostItems });
 
-    renderWithRouter(<ItemsDashboard />);
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/items' }]}>
+        <ItemsDashboard />
+      </MemoryRouter>
+    );
 
-    // Header/title for Found panel
+    // Lost panel heading
+    expect(screen.getByRole('heading', { name: /lost items/i })).toBeInTheDocument();
+
+    // Count badge equals the number of filtered items
+    const badge = screen.getAllByText(String(lostItems.length))[0];
+    expect(badge).toBeInTheDocument();
+
+    // Items titles present
+    expect(screen.getByText('Lost Phone')).toBeInTheDocument();
+    expect(screen.getByText('Lost Wallet')).toBeInTheDocument();
+  });
+
+  test('renders found panel with items and count', async () => {
+    const foundItems = [
+      { id: 10, title: 'Found Keys', description: 'Keychain with 3 keys', location: 'Gymnasium', createdAt: Date.now() },
+      { id: 11, title: 'Found ID Card', description: 'Student ID', location: 'Student Union', createdAt: Date.now() - 2000 },
+    ];
+    seedLocalStorage({ found: foundItems });
+
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/items' }]}>
+        <ItemsDashboard />
+      </MemoryRouter>
+    );
+
+    // Found panel heading
     expect(screen.getByRole('heading', { name: /found items/i })).toBeInTheDocument();
 
-    // Found item title appears
-    expect(await screen.findByText(/found keys/i)).toBeInTheDocument();
+    // Count badge equals the number of filtered items
+    const badges = screen.getAllByText(String(foundItems.length));
+    expect(badges.length).toBeGreaterThanOrEqual(1);
 
-    // Found items count badge shows 1
-    const badges = screen.getAllByText('1');
-    expect(badges.length).toBeGreaterThan(0);
+    // Items titles present
+    expect(screen.getByText('Found Keys')).toBeInTheDocument();
+    expect(screen.getByText('Found ID Card')).toBeInTheDocument();
+  });
+
+  test('shows empty states when no items', () => {
+    seedLocalStorage({});
+
+    render(
+      <MemoryRouter>
+        <ItemsDashboard />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/no lost items/i)).toBeInTheDocument();
+    expect(screen.getByText(/no found items/i)).toBeInTheDocument();
   });
 });
